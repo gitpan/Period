@@ -331,10 +331,15 @@ half-hour the rest of the week, use the period
 .Ve
 .SH "VERSION"
 .IX Header "VERSION"
-1.11
+1.12
 .SH "HISTORY"
 .IX Header "HISTORY"
 .PP
+.Vb 3
+\&        Version 1.12
+\&        ------------
+\&                - Updated email and web space information.
+.Ve
 .Vb 3
 \&        Version 1.11
 \&        ------------
@@ -347,7 +352,7 @@ half-hour the rest of the week, use the period
 .Ve
 .SH "AUTHOR"
 .IX Header "AUTHOR"
-Patrick Ryan <pryan@fhcrc.org>
+Patrick Ryan <pgryan@geocities.com>
 .SH "COPYRIGHT"
 .IX Header "COPYRIGHT"
 Copyright (c) 1997 Patrick Ryan.  All rights reserved.  This Perl module uses the
@@ -355,18 +360,18 @@ conditions given by Perl.  This module may only be distributed and or modified
 under the conditions given by Perl.
 .SH "DATE"
 .IX Header "DATE"
-January 26, 1997
+March 25, 1997
 .SH "SOURCE"
 .IX Header "SOURCE"
 This distribution can be found at
 .PP
 .Vb 1
-\&        http://newhutch.fhcrc.org/Patrick/Period/
+\&        http://www.geocities.com/SiliconValley/Lakes/8456/
 .Ve
 and other places, but probably CPAN, which can be found at
 .PP
 .Vb 1
-\&        http://www.perl.com/perl/CPAN/README.html
+\&        http://www.perl.com/CPAN/modules/by-module/Time/
 .Ve
 If that doesn't work, give
 .PP
@@ -381,7 +386,7 @@ Period.pm.sig.  The module can be verified with the public PGP key called
 \*(L"Patrick Ryan <pryan@sleepy>\*(R".  That public PGP key is available through
 .PP
 .Vb 1
-\&        http://newhutch.fhcrc.org/Patrick/
+\&        http://www.geocities.com/SiliconValley/Lakes/8456/
 .Ve
 
 .rn }` ''

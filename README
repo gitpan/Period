@@ -40,8 +40,9 @@ is a string which is of the form described in Period's man page.
 Getting the Distribution
 ------------------------
 
-This distribution can be retrieved at http://newhutch.fhcrc.org/Patrick/Period/
-or from CPAN at http://www.perl.com/CPAN/README.html.
+This distribution can be retrieved at
+http://www.geocities.com/SiliconValley/Lakes/8456/ or from CPAN at
+http://www.perl.com/CPAN/modules/by-module/Time/.
 
 
 --------------------------
@@ -50,7 +51,8 @@ Verification of the Module
 
 The module has been signed by the author with the PGP key "Patrick Ryan
 <pryan@sleepy>".  The PGP key can be retrieved from
-http://newhutch.fhcrc.org/Patrick/ or by fingering pryan@newhutch.fhcrc.org.
+http://www.geocities.com/SiliconValley/Lakes/8456/ or by emailing
+pgryan@geocities.com.
 
 The signature for the module Period.pm is stored in Period.pm.sig.  The
 signature itself has been time stamped.  The time stamp is stored in
@@ -106,7 +108,7 @@ Contacting the Author
 ---------------------
 
 I welcome any feedback on this module.  If you have comments, questions,
-or ideas, feel free to send them to me, Patrick Ryan, pryan@fhcrc.org.
+or ideas, feel free to send them to me, Patrick Ryan, pgryan@geocities.com.
 
 
 -------------------

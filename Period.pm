@@ -146,9 +146,13 @@ half-hour the rest of the week, use the period
 
 =head1 VERSION
 
-1.11
+1.12
 
 =head1 HISTORY
+
+	Version 1.12
+	------------
+		- Updated email and web space information.
 
 	Version 1.11
 	------------
@@ -160,7 +164,7 @@ half-hour the rest of the week, use the period
 
 =head1 AUTHOR
 
-Patrick Ryan <pryan@fhcrc.org>
+Patrick Ryan <pgryan@geocities.com>
 
 =head1 COPYRIGHT
 
@@ -170,17 +174,17 @@ under the conditions given by Perl.
 
 =head1 DATE
 
-January 26, 1997
+March 25, 1997
 
 =head1 SOURCE
 
 This distribution can be found at
 
-	http://newhutch.fhcrc.org/Patrick/Period/
+	http://www.geocities.com/SiliconValley/Lakes/8456/
 
 and other places, but probably CPAN, which can be found at
 
-	http://www.perl.com/perl/CPAN/README.html
+	http://www.perl.com/CPAN/modules/by-module/Time/
 
 If that doesn't work, give
 
@@ -194,7 +198,7 @@ A signature for Period.pm came with this distribution.  It is called
 Period.pm.sig.  The module can be verified with the public PGP key called
 "Patrick Ryan <pryan@sleepy>".  That public PGP key is available through
 
-	http://newhutch.fhcrc.org/Patrick/
+	http://www.geocities.com/SiliconValley/Lakes/8456/
 
 =cut
 
@@ -205,7 +209,7 @@ require Exporter;
 @ISA = qw(Exporter);
 @EXPORT = qw(inPeriod);
 
-$VERSION = "1.11";
+$VERSION = "1.12";
 
 sub inPeriod {
 
