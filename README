@@ -93,3 +93,4 @@ directory, execute
 if there isn't a file called Makefile.  Then execute
 
   make uninstall
+

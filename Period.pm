@@ -11,17 +11,26 @@ C<$result = inPeriod($time, $period);>
 =head1 DESCRIPTION
 
 The B<inPeriod> function determines if a given time falls within a given
-period.  inPeriod returns B<1> if the time does fall within the given period,
-B<0> if not, and B<-1> if inPeriod detects a malformed time or period.
+period.  B<inPeriod> returns B<1> if the time does fall within the given
+period, B<0> if not, and B<-1> if B<inPeriod> detects a malformed time or
+period.
 
-The time is specified as per the C<time()> function, which is assumed to be
-the number of non-leap seconds since January 1, 1970.
+The time is specified as per the C<time()> function, which is assumed to
+be the number of non-leap seconds since January 1, 1970.
 
 The period is specified as a string which adheres to the format
 
 	sub-period[, sub-period...]
 
-where a sub-period is of the form
+or the string "none" or whitespace.  The string "none" is not case
+sensitive.
+
+If the period is blank, then any time period is assumed because the time
+period has not been restricted.  In that case, B<inPeriod> returns 1.  If
+the period is "none", then no time period applies and B<inPeriod> returns
+0.
+
+A sub-period is of the form
 
 	scale {range [range ...]} [scale {range [range ...]}]
 
@@ -29,15 +38,15 @@ Scale must be one of nine different scales (or their equivalent codes):
 
 	Scale  | Scale | Valid Range Values
 	       | Code  |
-	*******|*******|*************************************************
-	year   |  yr   | n      where n is an integer 0<=n<=99 or n>=1970
-	month  |  mo   | 1-12   or  jan, feb, mar, apr, may, jun, jul,
-	       |       |            aug, sep, oct, nov, dec
+	*******|*******|************************************************
+	year   |  yr   | n     where n is an integer 0<=n<=99 or n>=1970
+	month  |  mo   | 1-12  or  jan, feb, mar, apr, may, jun, jul,
+	       |       |           aug, sep, oct, nov, dec
 	week   |  wk   | 1-6
 	yday   |  yd   | 1-365
 	mday   |  md   | 1-31
-	wday   |  wd   | 1-7    or  su, mo, tu, we, th, fr, sa
-	hour   |  hr   | 0-23   or  12am 1am-11am 12noon 12pm 1pm-11pm
+	wday   |  wd   | 1-7   or  su, mo, tu, we, th, fr, sa
+	hour   |  hr   | 0-23  or  12am 1am-11am 12noon 12pm 1pm-11pm
 	minute |  min  | 0-59
 	second |  sec  | 0-59
 
@@ -57,30 +66,31 @@ the first value, the range wraps around unless the scale specification
 is year.
 
 Year does not wrap because the year is never really reset, it just
-increments.  Ignoring that fact has lead to the dreaded year 2000 nightmare.
-When the year rolls over from 99 to 00, it has really rolled over a century,
-not gone back a century.  inPeriod supports the dangerous two digit year
-notation because it is so rampant, however, inPeriod converts the two digit
-notation to four digits by prepending the first two digits from the current
-year.  In the case of 99-1972, the 99 is translated to whatever current
-century it is (probably 20th), and then range 99-1972 is treated as
-1972-1999.  If it were the 21st century, then the range would be 1972-2099.
+increments.  Ignoring that fact has lead to the dreaded year 2000
+nightmare.  When the year rolls over from 99 to 00, it has really rolled
+over a century, not gone back a century.  B<inPeriod> supports the
+dangerous two digit year notation because it is so rampant.  However,
+B<inPeriod> converts the two digit notation to four digits by prepending
+the first two digits from the current year.  In the case of 99-1972, the
+99 is translated to whatever current century it is (probably 20th), and
+then range 99-1972 is treated as 1972-1999.  If it were the 21st century,
+then the range would be 1972-2099.
 
-Anyway, if v-v is 9-2 and the scale is month, September, October, November,
-December, January, and February are the months that the range specifies.
-If v-v is 2-9, then the valid months are February, March, April, May, Jun,
-July, August, and September.  9-2 is the same as Sep-Feb.
+Anyway, if v-v is 9-2 and the scale is month, September, October,
+November, December, January, and February are the months that the range
+specifies.  If v-v is 2-9, then the valid months are February, March,
+April, May, Jun, July, August, and September.  9-2 is the same as Sep-Feb.
 
-v isn't a point in time.  In the context of the hour scale, 9
-specifies the time period from 9:00:00 am to 9:59:59 am.  This is what
-most people would call 9-10.  In other words, v is discrete in its
-time scale.  9 changes to 10 when 9:59:59 changes to 10:00:00, but it
-is 9 from 9:00:00 to 9:59:59.  Just before 9:00:00, v was 8.
+v isn't a point in time.  In the context of the hour scale, 9 specifies
+the time period from 9:00:00 am to 9:59:59 am.  This is what most people
+would call 9-10.  In other words, v is discrete in its time scale.
+9 changes to 10 when 9:59:59 changes to 10:00:00, but it is 9 from
+9:00:00 to 9:59:59.  Just before 9:00:00, v was 8.
 
-Note that whitespace can be anywhere and case is not important.  Note also
-that scales must be specified either in long form (year, month, week,
-etc.) or in code form (yr, mo, wk, etc.).  Scale forms may be mixed in a
-period statement.
+Note that whitespace can be anywhere and case is not important.  Note
+also that scales must be specified either in long form (year, month,
+week, etc.) or in code form (yr, mo, wk, etc.).  Scale forms may be
+mixed in a period statement.
 
 Furthermore, when using letters to specify ranges, only the first two
 for week days or the first three for months are significant.  January
@@ -97,14 +107,14 @@ period such as
 When specifing a range by using -, it is best to think of - as meaning
 through.  It is 9am through 4pm, which is just before 5pm.
 
-To specify a time period from Monday through Friday, 9am to 5pm on Monday,
-Wednesday, and Friday, and 9am to 3pm on Tuesday and Thursday, use a
-period such as
+To specify a time period from Monday through Friday, 9am to 5pm on
+Monday, Wednesday, and Friday, and 9am to 3pm on Tuesday and Thursday,
+use a period such as
 
 	wd {Mon Wed Fri} hr {9am-4pm}, wd{Tue Thu} hr {9am-2pm}
 
-To specify a time period that extends Mon-Fri 9am-5pm, but alternates weeks
-in a month, use a period such as
+To specify a time period that extends Mon-Fri 9am-5pm, but alternates
+weeks in a month, use a period such as
 
 	wk {1 3 5} wd {Mon Wed Fri} hr {9am-4pm}
 
@@ -128,7 +138,8 @@ Wait!  So is this:
 
 	mo {Jan Feb} mo {Nov Dec}
 
-To specify a period that describes every other half-hour, use something like
+To specify a period that describes every other half-hour, use something
+like
 
 	minute { 0-29 }
 
@@ -149,13 +160,17 @@ half-hour the rest of the week, use the period
 
 =head1 VERSION
 
-1.13
+1.20
 
 =head1 HISTORY
 
-        Version 1.13
-        ------------
-                - Cleaned up the error checking code.
+	Version 1.20
+	------------
+		- Added the ability to specify no time period.
+
+	Version 1.13
+	------------
+		- Cleaned up the error checking code.
 
 	Version 1.12
 	------------
@@ -175,13 +190,13 @@ Patrick Ryan <pgryan@geocities.com>
 
 =head1 COPYRIGHT
 
-Copyright (c) 1997 Patrick Ryan.  All rights reserved.  This Perl module uses
-the conditions given by Perl.  This module may only be distributed and or
-modified under the conditions given by Perl.
+Copyright (c) 1997 Patrick Ryan.  All rights reserved.  This Perl module
+uses the conditions given by Perl.  This module may only be distributed
+and or modified under the conditions given by Perl.
 
 =head1 DATE
 
-July 5, 1997
+August 26, 1997
 
 =head1 SOURCE
 
@@ -202,7 +217,7 @@ require Exporter;
 @ISA = qw(Exporter);
 @EXPORT = qw(inPeriod);
 
-$VERSION = "1.13";
+$VERSION = "1.20";
 
 sub inPeriod {
 
@@ -216,9 +231,10 @@ sub inPeriod {
 
 
   # Test $period and $time for validity.  Return -1 if $time contains
-  # non-numbers or is null.  Return 1 if $time numeric but $period is all
+  # non-numbers or is null.  Return 1 if $time is numeric but $period is all
   # whitespace.  No period means all times are within the period because
-  # period is not restricted.  Also make $period all lowercase.
+  # period is not restricted.  Return 0 if $period is "none".  Also make
+  # $period all lowercase.
 
   $time =~ s/^\s*(.*)/$1/;
   $time =~ s/\s*$//;
@@ -229,6 +245,8 @@ sub inPeriod {
   $period =~ s/\s*$//;
   $period = lc($period);
   return 1 if ($period eq "");
+
+  return 0 if ($period eq "none");
 
   # Thise two associative arrays are used to map and validate scales.
 
@@ -781,3 +799,4 @@ sub sec {
 }
 
 1;
+
