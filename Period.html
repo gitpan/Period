@@ -1,18 +1,18 @@
 <!-- $Id$ -->
 <HTML><HEAD>
-<CENTER><TITLE>Period.pm</TITLE>
+<CENTER><TITLE>Period</TITLE>
 </HEAD>
 <BODY></CENTER><p><hr>
 
 <H1> 
-<A NAME="Period.pm_name_0">
+<A NAME="Period_name_0">
 NAME</A>
 </H1>
 Time::Period - A Perl module to deal with time periods.
 <p><p><hr>
 
 <H1> 
-<A NAME="Period.pm_synopsis_0">
+<A NAME="Period_synopsis_0">
 SYNOPSIS</A>
 </H1>
 <CODE>use Time::Period;</CODE>
@@ -20,7 +20,7 @@ SYNOPSIS</A>
 <p><p><hr>
 
 <H1> 
-<A NAME="Period.pm_description_0">
+<A NAME="Period_description_0">
 DESCRIPTION</A>
 </H1>
 The <STRONG>inPeriod</STRONG> function determines if a given time falls within a given
@@ -103,7 +103,7 @@ is a valid specification for jan, and Sunday is a valid specification
 for su.  Sun is also valid for su.
 <p>
 <H2> 
-<A NAME="Period.pm_period_0">
+<A NAME="Period_period_0">
 PERIOD EXAMPLES</A>
 </H2>
 To specify a time period from Monday through Friday, 9am to 5pm, use a
@@ -113,6 +113,8 @@ period such as
         wd {Mon-Fri} hr {9am-4pm}
 
 </XMP>
+<p>When specifing a range by using -, it is best to think of - as meaning
+through.  It is 9am through 4pm, which is just before 5pm.
 <p>To specify a time period from Monday through Friday, 9am to 5pm on Monday,
 Wednesday, and Friday, and 9am to 3pm on Tuesday and Thursday, use a
 period such as
@@ -158,7 +160,7 @@ in a month, use a period such as
         mo {Jan Feb} mo {Nov Dec}
 
 </XMP>
-<p>To specify a period that describes every half-hour, use something like
+<p>To specify a period that describes every other half-hour, use something like
 <p>
 <XMP>
         minute { 0-29 }
@@ -171,7 +173,7 @@ in a month, use a period such as
 
 </XMP>
 <p>Remember, 11am is not 11:00:00am, but rather 11:00:00am - 11:59:59am.
-<p>Hmmmm, every 5 seconds could be a fun period...
+<p>Hmmmm, 5 second blocks could be a fun period...
 <p>
 <XMP>
         sec {0-4 10-14 20-24 30-34 40-44 50-54}
@@ -187,21 +189,24 @@ half-hour the rest of the week, use the period
 <p><p><hr>
 
 <H1> 
-<A NAME="Period.pm_version_0">
+<A NAME="Period_version_0">
 VERSION</A>
 </H1>
-1.12
+1.13
 <p><p><hr>
 
 <H1> 
-<A NAME="Period.pm_history_0">
+<A NAME="Period_history_0">
 HISTORY</A>
 </H1>
 
 <XMP>
-	Version 1.12
-	------------
-		- Updated email and web space information.
+        Version 1.13
+        ------------
+                - Cleaned up the error checking code.
+        Version 1.12
+        ------------
+                - Updated email and web space information.
         Version 1.11
         ------------
                 - Minor bug fix in 1.10.
@@ -213,30 +218,30 @@ HISTORY</A>
 <p><p><hr>
 
 <H1> 
-<A NAME="Period.pm_author_0">
+<A NAME="Period_author_0">
 AUTHOR</A>
 </H1>
 Patrick Ryan &lt;<A HREF="MAILTO:pgryan@geocities.com">pgryan@geocities.com</A>&gt;
 <p><p><hr>
 
 <H1> 
-<A NAME="Period.pm_copyright_0">
+<A NAME="Period_copyright_0">
 COPYRIGHT</A>
 </H1>
-Copyright (c) 1997 Patrick Ryan.  All rights reserved.  This Perl module uses the
-conditions given by Perl.  This module may only be distributed and or modified
-under the conditions given by Perl.
+Copyright (c) 1997 Patrick Ryan.  All rights reserved.  This Perl module uses
+the conditions given by Perl.  This module may only be distributed and or
+modified under the conditions given by Perl.
 <p><p><hr>
 
 <H1> 
-<A NAME="Period.pm_date_0">
+<A NAME="Period_date_0">
 DATE</A>
 </H1>
-March 25, 1997
+July 5, 1997
 <p><p><hr>
 
 <H1> 
-<A NAME="Period.pm_source_0">
+<A NAME="Period_source_0">
 SOURCE</A>
 </H1>
 This distribution can be found at
@@ -245,31 +250,10 @@ This distribution can be found at
         http://www.geocities.com/SiliconValley/Lakes/8456/
 
 </XMP>
-<p>and other places, but probably CPAN, which can be found at
+<p>or
 <p>
 <XMP>
         http://www.perl.com/CPAN/modules/by-module/Time/
-
-</XMP>
-<p>If that doesn't work, give
-<p>
-<XMP>
-        http://www.perl.com/perl/CPAN
-
-</XMP>
-<p>a shot.
-<p><p><hr>
-
-<H1> 
-<A NAME="Period.pm_authenticity_0">
-AUTHENTICITY VERIFICATION</A>
-</H1>
-A signature for Period.pm came with this distribution.  It is called
-Period.pm.sig.  The module can be verified with the public PGP key called
-``Patrick Ryan &lt;pryan<STRONG>@sleepy</STRONG>&gt;''.  That public PGP key is available through
-<p>
-<XMP>
-        http://www.geocities.com/SiliconValley/Lakes/8456/
 
 </XMP>
 <p>

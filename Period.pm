@@ -94,6 +94,9 @@ period such as
 
 	wd {Mon-Fri} hr {9am-4pm}
 
+When specifing a range by using -, it is best to think of - as meaning
+through.  It is 9am through 4pm, which is just before 5pm.
+
 To specify a time period from Monday through Friday, 9am to 5pm on Monday,
 Wednesday, and Friday, and 9am to 3pm on Tuesday and Thursday, use a
 period such as
@@ -125,7 +128,7 @@ Wait!  So is this:
 
 	mo {Jan Feb} mo {Nov Dec}
 
-To specify a period that describes every half-hour, use something like
+To specify a period that describes every other half-hour, use something like
 
 	minute { 0-29 }
 
@@ -135,7 +138,7 @@ To specify the morning, use
 
 Remember, 11am is not 11:00:00am, but rather 11:00:00am - 11:59:59am.
 
-Hmmmm, every 5 seconds could be a fun period...
+Hmmmm, 5 second blocks could be a fun period...
 
 	sec {0-4 10-14 20-24 30-34 40-44 50-54}
 
@@ -146,9 +149,13 @@ half-hour the rest of the week, use the period
 
 =head1 VERSION
 
-1.12
+1.13
 
 =head1 HISTORY
+
+        Version 1.13
+        ------------
+                - Cleaned up the error checking code.
 
 	Version 1.12
 	------------
@@ -168,13 +175,13 @@ Patrick Ryan <pgryan@geocities.com>
 
 =head1 COPYRIGHT
 
-Copyright (c) 1997 Patrick Ryan.  All rights reserved.  This Perl module uses the
-conditions given by Perl.  This module may only be distributed and or modified
-under the conditions given by Perl.
+Copyright (c) 1997 Patrick Ryan.  All rights reserved.  This Perl module uses
+the conditions given by Perl.  This module may only be distributed and or
+modified under the conditions given by Perl.
 
 =head1 DATE
 
-March 25, 1997
+July 5, 1997
 
 =head1 SOURCE
 
@@ -182,23 +189,9 @@ This distribution can be found at
 
 	http://www.geocities.com/SiliconValley/Lakes/8456/
 
-and other places, but probably CPAN, which can be found at
+or
 
 	http://www.perl.com/CPAN/modules/by-module/Time/
-
-If that doesn't work, give
-
-	http://www.perl.com/perl/CPAN
-
-a shot.
-
-=head1 AUTHENTICITY VERIFICATION
-
-A signature for Period.pm came with this distribution.  It is called
-Period.pm.sig.  The module can be verified with the public PGP key called
-"Patrick Ryan <pryan@sleepy>".  That public PGP key is available through
-
-	http://www.geocities.com/SiliconValley/Lakes/8456/
 
 =cut
 
@@ -209,13 +202,13 @@ require Exporter;
 @ISA = qw(Exporter);
 @EXPORT = qw(inPeriod);
 
-$VERSION = "1.12";
+$VERSION = "1.13";
 
 sub inPeriod {
 
-  my($time, $period) = @_;
-  my(%scaleCode, %scaleCodeV, $result, $i, $lb, $rb, @period,
-     $subPeriod, @scale, %scale, $range, @range, $ranges, $v1, $v2);
+  my($time, $period) = @_[0,1];
+  my(%scaleCode, %scaleCodeV, $result, $i, $lb, $rb, @subPeriods, $subPeriod,
+     @scales, %scaleResults, $rangeData, @ranges, $range, $v1, $v2);
   local($scale, $yr, $mo, $wk, $yd, $md, $wd, $hr, $min, $sec);
 
   # $scale, $yr, $mo, $wk, $yd, $md, $wd, $hr, $min, and $sec are declared
@@ -227,37 +220,39 @@ sub inPeriod {
   # whitespace.  No period means all times are within the period because
   # period is not restricted.  Also make $period all lowercase.
 
-  $time =~ /^\s*(.*)\s*$/;
-  $time = $1;
+  $time =~ s/^\s*(.*)/$1/;
+  $time =~ s/\s*$//;
   return -1 if ( ($time =~ /\D/) || ($time eq "") );
 
-  $period =~ /^\s*(.*)\s*$/;
-  $period = lc($1);
+  return 1 if (!defined($period));
+  $period =~ s/^\s*(.*)/$1/;
+  $period =~ s/\s*$//;
+  $period = lc($period);
   return 1 if ($period eq "");
 
   # Thise two associative arrays are used to map and validate scales.
 
-  %scaleCode = ('year', 'yr', 'month', 'mo', 'week', 'wk', 'mday', 'md',
-                'wday', 'wd', 'yday', 'yd', 'hour', 'hr', 'minute', 'min',
-                'second', 'sec');
-  %scaleCodeV = ('yr', 'yr', 'mo', 'mo', 'wk', 'wk', 'md', 'md', 'wd', 'wd',
-                 'yd', 'yd', 'hr', 'hr', 'min', 'min', 'sec', 'sec');
+  %scaleCode = ('year' => 'yr', 'month' => 'mo', 'week' => 'wk', 'mday' => 'md',
+                'wday' => 'wd', 'yday' => 'yd', 'hour' => 'hr',
+                'minute' => 'min', 'second' => 'sec');
+  %scaleCodeV = ('yr' => 1, 'mo' => 1, 'wk' => 1, 'md' => 1, 'wd' => 1,
+                 'yd' => 1, 'hr' => 1, 'min' => 1, 'sec' => 1);
 
 
   # The names of these variables must correlate with the scale codes.
 
-  ($yr, $mo, $wk, $yd, $md, $wd, $hr, $min, $sec) = &getTimeVars($time);
+  ($yr, $mo, $wk, $yd, $md, $wd, $hr, $min, $sec) = getTimeVars($time);
 
 
   # The first step is to break $period up into all its sub periods.
 
-  @period = split(/\s*,\s*/, $period);
+  @subPeriods = split(/\s*,\s*/, $period);
 
   # Evaluate each sub-period to see if $time falls within it.  If it does
   # then return 1, if $time does not fall within any of the sub-periods,
   # return 0.
 
-  foreach $subPeriod (@period) {
+  foreach $subPeriod (@subPeriods) {
 
     # Do a validity check for braces.  Make sure the number of {s equals the
     # number of }s.  If there aren't any, return -1 as well.
@@ -267,25 +262,25 @@ sub inPeriod {
     return -1 if ( ($lb != $rb) || ($lb == 0) );
 
 
-    @scale = split(/}\s*/, $subPeriod);
+    @scales = split(/}\s*/, $subPeriod);
 
     # Make sure that the number of {s are equal to the number of scales
     # found.  If it is not, return -1.
 
-    return -1 if ( $lb != @scale );
+    return -1 if ($lb != @scales);
 
 
     # Evaluate each scale, one by one, in the sub-period.  Once this
-    # completes, there will be a hash called %scale which will contain
+    # completes, there will be a hash called %scaleResults which will contain
     # boolean values.  The key to this hash will be the code version of
-    # each scale in @scale, if it was a valid scale.  If an invalid string
+    # each scale in @scales, if it was a valid scale.  If an invalid string
     # is found, -1 will be returned.  The boolean value will indicate
     # whether $time falls within the particular scale in question.
 
-    foreach $scale (@scale) {
+    foreach $scale (@scales) {
       return -1 if ($scale !~ /^([a-z]*)\s*{\s*(.*)/);
       $scale = $1;
-      $ranges = $2;
+      $rangeData = $2;
 
       # Check to see if $scale is a valid scale.  If it is, make sure
       # it is in code form.
@@ -293,48 +288,47 @@ sub inPeriod {
       # Is it possibly the long form?
       if (length($scale) > 3) {
         # If it doesn't map to a code...
-        return -1 if ($scaleCode{$scale} eq "");
+        return -1 if (!defined($scaleCode{$scale}));
         $scale = $scaleCode{$scale};
       # Okay, it's not longer than 3 characters, is it 2 or 3 characters long?
       } elsif (length($scale) > 1) {
         # Is it an invalid code?
-        return -1 if ($scale ne $scaleCodeV{$scale});
+        return -1 if (!defined($scaleCodeV{$scale}));
       # It must be zero or one character long, which is an invalid scale.
       } else {
         return -1;
       }
 
       # $scale is a valid scale and it is now in code form.
-      # Make sure that if there is a "-" in $ranges there is a v before
-      # and a v after it.  If there is no "-", make sure there is at least
-      # one item.
-      if ($ranges =~ /(.*)-(.*)/) {
-        $v1 = $1;
-        $v2 = $2;
-        return -1 if ( ($v1 !~ /\w/) || ($v2 !~ /\w/) );
-      } else {
-        return -1 if ($ranges !~ /\w/);
-      }
 
-      # Erase any whitespace between "v - v" so that it becomes "v-v".
-      $ranges =~ s/(\w+)\s*-\s*(\w+)/$1-$2/g;
+      # Erase any whitespace between any "v - v"s so that they become "v-v".
+      $rangeData =~ s/(\w+)\s*-\s*(\w+)/$1-$2/g;
 
-      @range = split(/\s+/, $ranges);
+      @ranges = split(/\s+/, $rangeData);
+
+      $scaleResults{$scale} = 0 if (!defined($scaleResults{$scale}));
 
       # Alright, $range is one of the ranges (could be the only one) for
       # $scale.  If $range is valid within the context of $scale and $time,
-      # set $scale{$scale} to 1.
+      # set $scaleResults{$scale} to 1.
 
-      $scale{$scale} = 0 if ( ! defined($scale{$scale}) );
+      foreach $range (@ranges) {
 
-      foreach $range (@range) {
+        if ($range =~ /-/) {
+          $v1 = $`;
+          $v2 = $';
+          return -1 if ($v1 !~ /\w/ || $v2 !~ /\w/);
+        } else {
+          return -1 if ($range !~ /\w/);
+        }
+
         # This line calls the function named by $scale and feeds it the
         # variable $range and the variable named by $scale.
 
         $result = &$scale($range, $$scale);
 
         return -1 if ($result == -1);
-        $scale{$scale} = $result if ($result == 1);
+        $scaleResults{$scale} = 1 if ($result == 1);
       }
     }
 
@@ -345,8 +339,8 @@ sub inPeriod {
     # if none of them cover $time.
 
     $i = 1;
-    foreach $scale (keys %scale) {
-      $i = 0 if ($scale{$scale} == 0);
+    foreach $scale (keys %scaleResults) {
+      $i = 0 if ($scaleResults{$scale} == 0);
     }
 
     # This is a sub-period where the time falls into all of the scales
@@ -354,7 +348,7 @@ sub inPeriod {
     return 1 if ($i == 1);
 
     # Reset scale for a new sub-period.
-    %scale = ();
+    %scaleResults = ();
   }
 
   # $time didn't fall into any of the sub-periods.  :(
@@ -367,7 +361,7 @@ sub getTimeVars {
   # it in component form.  Specifically, this function returns
   # ($year, $month, $week, $yday, $mday, $wday, $hour, $minute, $second).
 
-  my($time) = @_;
+  my($time) = $_[0];
   my($sec, $min, $hr, $md, $mo, $yr, $wd, $yd, @pwd, @wd, $wk, $i);
 
 
@@ -421,12 +415,12 @@ sub yr {
   # A function to determine if a given range is within a given year.
   # Returns 1 if it is, 0 if not, and -1 if the supplied range is invalid.
 
-  my($range, $yr) = (@_);
+  my($range, $yr) = @_[0,1];
   my($v1, $v2);
 
-  if ($range =~ /(.+)-(.+)/) {
-    $v1 = $1;
-    $v2 = $2;
+  if ($range =~ /-/) {
+    $v1 = $`;
+    $v2 = $';
     return -1 if ( ($v1 =~ /\D/) || ($v2 =~ /\D/) );
     return -1 if ( ($v1 < 0) || ($v2 < 0) );
     return -1 if ( ($v1 > 99) && ($v1 < 1970) );
@@ -455,24 +449,25 @@ sub mo {
   # A function to determine if a given range is within a given month.
   # Returns 1 if it is, 0 if not, and -1 if the supplied range is invalid.
 
-  my($range, $mo) = (@_);
+  my($range, $mo) = @_[0,1];
   my(%mo, %moV, $v1, $v2);
 
   # These associative arrays are used to validate months and to map the
   # letter designations to their numeric equivalents.
 
-  %mo =  ('jan', 0, 'feb', 1, 'mar', 2, 'apr', 3, 'may', 4, 'jun', 5,
-          'jul', 6, 'aug', 7, 'sep', 8, 'oct', 9, 'nov', 10, 'dec', 11);
-  %moV = ('jan', 'jan', 'feb', 'feb', 'mar', 'mar', 'apr', 'apr', 'may',
-          'may', 'jun', 'jun', 'jul', 'jul', 'aug', 'aug', 'sep', 'sep',
-          'oct', 'oct', 'nov', 'nov', 'dec', 'dec');
+  %mo =  ('jan' => 0, 'feb' => 1, 'mar' => 2, 'apr' => 3, 'may' => 4,
+          'jun' => 5, 'jul' => 6, 'aug' => 7, 'sep' => 8, 'oct' => 9,
+          'nov' => 10, 'dec' => 11);
+  %moV = ('jan' => 1, 'feb' => 1, 'mar' => 1, 'apr' => 1, 'may' => 1,
+          'jun' => 1, 'jul' => 1, 'aug' => 1, 'sep' => 1, 'oct' => 1,
+          'nov' => 1, 'dec' => 1);
 
-  if ($range =~ /(.+)-(.+)/) {
-    $v1 = $1;
-    $v2 = $2;
+  if ($range =~ /-/) {
+    $v1 = $`;
+    $v2 = $';
     if ($v1 =~ /[a-z]/) {
       $v1 = substr($v1, 0, 3);
-      return -1 if ($moV{$v1} ne $v1);
+      return -1 if (!defined($moV{$v1}));
       $v1 = $mo{$v1};
     } elsif ($v1 =~ /\D/) {
       return -1;
@@ -482,7 +477,7 @@ sub mo {
     }
     if ($v2 =~ /[a-z]/) {
       $v2 = substr($v2, 0, 3);
-      return -1 if ($moV{$v2} ne $v2);
+      return -1 if (!defined($moV{$v2}));
       $v2 = $mo{$v2};
     } elsif ($v2 =~ /\D/) {
       return -1;
@@ -498,7 +493,7 @@ sub mo {
   } else {
     if ($range =~ /[a-z]/) {
       $range = substr($range, 0, 3);
-      return -1 if ($moV{$range} ne $range);
+      return -1 if (!defined($moV{$range}));
       $range = $mo{$range};
     } elsif ($range =~ /\D/) {
       return -1;
@@ -516,12 +511,12 @@ sub wk {
   # A function to determine if a given range is within a given week.
   # Returns 1 if it is, 0 if not, and -1 if the supplied range is invalid.
 
-  my($range, $wk) = (@_);
+  my($range, $wk) = @_[0,1];
   my($v1, $v2);
 
-  if ($range =~ /(.+)-(.+)/) {
-    $v1 = $1;
-    $v2 = $2;
+  if ($range =~ /-/) {
+    $v1 = $`;
+    $v2 = $';
     return -1 if ( ($v1 =~ /\D/) || ($v2 =~ /\D/) );
     $v1--;
     $v2--;
@@ -547,12 +542,12 @@ sub yd {
   # year.  Returns 1 if it is, 0 if not, and -1 if the supplied range is
   # invalid.
 
-  my($range, $yd) = (@_);
+  my($range, $yd) = @_[0,1];
   my($v1, $v2);
 
-  if ($range =~ /(.+)-(.+)/) {
-    $v1 = $1;
-    $v2 = $2;
+  if ($range =~ /-/) {
+    $v1 = $`;
+    $v2 = $';
     return -1 if ( ($v1 =~ /\D/) || ($v2 =~ /\D/) );
     $v1--;
     $v2--;
@@ -577,12 +572,12 @@ sub md {
   # month.  Returns 1 if it is, 0 if not, and -1 if the supplied range is
   # invalid.
 
-  my($range, $md) = (@_);
+  my($range, $md) = @_[0,1];
   my($v1, $v2);
 
-  if ($range =~ /(.+)-(.+)/) {
-    $v1 = $1;
-    $v2 = $2;
+  if ($range =~ /-/) {
+    $v1 = $`;
+    $v2 = $';
     return -1 if ( ($v1 =~ /\D/) || ($v2 =~ /\D/) );
     return -1 if ( ($v1 < 1) || ($v1 > 31) );
     return -1 if ( ($v2 < 1) || ($v2 > 31) );
@@ -604,22 +599,23 @@ sub wd {
   # week.  Returns 1 if it is, 0 if not, and -1 if the supplied range is
   # invalid.
 
-  my($range, $wd) = (@_);
+  my($range, $wd) = @_[0,1];
   my(%wd, %wdV, $v1, $v2);
 
   # These associative arrays are used to validate week days and to map the
   # letter designations to their numeric equivalents.
 
-  %wd =  ('su', 0, 'mo', 1, 'tu', 2, 'we', 3, 'th', 4, 'fr', 5, 'sa', 6);
-  %wdV = ('su', 'su', 'mo', 'mo', 'tu', 'tu', 'we', 'we', 'th', 'th', 'fr',
-          'fr', 'sa', 'sa');
+  %wd =  ('su' => 0, 'mo' => 1, 'tu' => 2, 'we' => 3, 'th' => 4, 'fr' => 5,
+          'sa' => 6);
+  %wdV = ('su' => 1, 'mo' => 1, 'tu' => 1, 'we' => 1, 'th' => 1, 'fr' => 1,
+          'sa' => 1);
 
-  if ($range =~ /(.+)-(.+)/) {
-    $v1 = $1;
-    $v2 = $2;
+  if ($range =~ /-/) {
+    $v1 = $`;
+    $v2 = $';
     if ($v1 =~ /[a-z]/) {
       $v1 = substr($v1, 0, 2);
-      return -1 if ($wdV{$v1} ne $v1);
+      return -1 if (!defined($wdV{$v1}));
       $v1 = $wd{$v1};
     } elsif ($v1 =~ /\D/) {
       return -1;
@@ -629,7 +625,7 @@ sub wd {
     }
     if ($v2 =~ /[a-z]/) {
       $v2 = substr($v2, 0, 2);
-      return -1 if ($wdV{$v2} ne $v2);
+      return -1 if (!defined($wdV{$v2}));
       $v2 = $wd{$v2};
     } elsif ($v2 =~ /\D/) {
       return -1;
@@ -645,7 +641,7 @@ sub wd {
   } else {
     if ($range =~ /[a-z]/) {
       $range = substr($range, 0, 2);
-      return -1 if ($wdV{$range} ne $range);
+      return -1 if (!defined($wdV{$range}));
       $range = $wd{$range};
     } elsif ($range =~ /\D/) {
       return -1;
@@ -663,12 +659,12 @@ sub hr {
   # A function to determine if a given range is within a given hour.
   # Returns 1 if it is, 0 if not, and -1 if the supplied range is invalid.
 
-  my($range, $hr) = (@_);
+  my($range, $hr) = @_[0,1];
   my($v1, $v2);
 
-  if ($range =~ /(.+)-(.+)/) {
-    $v1 = $1;
-    $v2 = $2;
+  if ($range =~ /-/) {
+    $v1 = $`;
+    $v2 = $';
     if ($v1 =~ /^(\d+)am$/) {
       if ($1 == 12) {
         $v1 = 0;
@@ -736,12 +732,12 @@ sub min {
   # A function to determine if a given range is within a given minute.
   # Returns 1 if it is, 0 if not, and -1 if the supplied range is invalid.
 
-  my($range, $min) = (@_);
+  my($range, $min) = @_[0,1];
   my($v1, $v2);
 
-  if ($range =~ /(.+)-(.+)/) {
-    $v1 = $1;
-    $v2 = $2;
+  if ($range =~ /-/) {
+    $v1 = $`;
+    $v2 = $';
     return -1 if ( ($v1 =~ /\D/) || ($v2 =~ /\D/) );
     return -1 if ( ($v1 < 0) || ($v1 > 59) );
     return -1 if ( ($v2 < 0) || ($v2 > 59) );
@@ -762,12 +758,12 @@ sub sec {
   # A function to determine if a given range is within a given second.
   # Returns 1 if it is, 0 if not, and -1 if the supplied range is invalid.
 
-  my($range, $sec) = (@_);
+  my($range, $sec) = @_[0,1];
   my($v1, $v2);
 
-  if ($range =~ /(.+)-(.+)/) {
-    $v1 = $1;
-    $v2 = $2;
+  if ($range =~ /-/) {
+    $v1 = $`;
+    $v2 = $';
     return -1 if ( ($v1 =~ /\D/) || ($v2 =~ /\D/) );
     return -1 if ( ($v1 < 0) || ($v1 > 59) );
     return -1 if ( ($v2 < 0) || ($v2 > 59) );

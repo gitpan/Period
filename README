@@ -14,7 +14,6 @@ Document Contents
   - Document Contents
   - Overview
   - Getting the Distribution
-  - Verification of the Module
   - Installation of the Module
   - Using the Module
   - Contacting the Author
@@ -41,37 +40,8 @@ Getting the Distribution
 ------------------------
 
 This distribution can be retrieved at
-http://www.geocities.com/SiliconValley/Lakes/8456/ or from CPAN at
-http://www.perl.com/CPAN/modules/by-module/Time/.
-
-
---------------------------
-Verification of the Module
---------------------------
-
-The module has been signed by the author with the PGP key "Patrick Ryan
-<pryan@sleepy>".  The PGP key can be retrieved from
-http://www.geocities.com/SiliconValley/Lakes/8456/ or by emailing
-pgryan@geocities.com.
-
-The signature for the module Period.pm is stored in Period.pm.sig.  The
-signature itself has been time stamped.  The time stamp is stored in
-Period.pm.sig.stamp.  Verification of the time stamp will require the
-PGP keys for the service, which can be found at
-http://www.itconsult.co.uk/stamper.htm.
-
-Follow these instructions to verify the time stamped signature.
-
-1) Retrieve the PGP keys from the stamping service.
-2) Verify the file Period.pm.sig.stamp with the keys from the stamping
-   service, but use the -o switch to specify the output file name of
-   Period.pm.pgp.
-3) Retrieve my PGP key, Patrick Ryan <pryan@sleepy>.
-4) Verify Period.pm with Period.pm.pgp.
-
-The process of verifying the time stamp also verifies Period.pm.  There
-is no need to verify Period.pm with Period.pm.sig if the time stamp
-has been verified using the procedure defined above.
+<URL=http://www.geocities.com/SiliconValley/Lakes/8456/> or from CPAN at
+<URL=http://www.perl.com/CPAN/modules/by-module/Time/>.
 
 
 --------------------------

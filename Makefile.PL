@@ -4,5 +4,5 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     'NAME'	=> 'Time::Period',
     'DISTNAME'  => 'Period.pm',
-    'VERSION'   => '1.12',
+    'VERSION'   => '1.13',
 );

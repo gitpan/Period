@@ -73,7 +73,7 @@
 .nr % 0
 .rr F
 .\}
-.TH PERIOD 1 "perl 5.003 with" "26/Jan/97" "User Contributed Perl Documentation"
+.TH PERIOD 1 "perl 5.003, patch 07" "5/Jul/97" "Perl Programmers Reference Guide"
 .IX Title "PERIOD 1"
 .UC
 .IX Name "Time::Period - A Perl module to deal with time periods."
@@ -268,6 +268,9 @@ period such as
 .Vb 1
 \&        wd {Mon-Fri} hr {9am-4pm}
 .Ve
+When specifing a range by using \-, it is best to think of \- as meaning
+through.  It is 9am through 4pm, which is just before 5pm.
+.PP
 To specify a time period from Monday through Friday, 9am to 5pm on Monday,
 Wednesday, and Friday, and 9am to 3pm on Tuesday and Thursday, use a
 period such as
@@ -306,7 +309,7 @@ Wait!  So is this:
 .Vb 1
 \&        mo {Jan Feb} mo {Nov Dec}
 .Ve
-To specify a period that describes every half-hour, use something like
+To specify a period that describes every other half-hour, use something like
 .PP
 .Vb 1
 \&        minute { 0-29 }
@@ -318,7 +321,7 @@ To specify the morning, use
 .Ve
 Remember, 11am is not 11:00:00am, but rather 11:00:00am \- 11:59:59am.
 .PP
-Hmmmm, every 5 seconds could be a fun period...
+Hmmmm, 5 second blocks could be a fun period...
 .PP
 .Vb 1
 \&        sec {0-4 10-14 20-24 30-34 40-44 50-54}
@@ -331,10 +334,15 @@ half-hour the rest of the week, use the period
 .Ve
 .SH "VERSION"
 .IX Header "VERSION"
-1.12
+1.13
 .SH "HISTORY"
 .IX Header "HISTORY"
 .PP
+.Vb 3
+\&        Version 1.13
+\&        ------------
+\&                - Cleaned up the error checking code.
+.Ve
 .Vb 3
 \&        Version 1.12
 \&        ------------
@@ -355,12 +363,12 @@ half-hour the rest of the week, use the period
 Patrick Ryan <pgryan@geocities.com>
 .SH "COPYRIGHT"
 .IX Header "COPYRIGHT"
-Copyright (c) 1997 Patrick Ryan.  All rights reserved.  This Perl module uses the
-conditions given by Perl.  This module may only be distributed and or modified
-under the conditions given by Perl.
+Copyright (c) 1997 Patrick Ryan.  All rights reserved.  This Perl module uses
+the conditions given by Perl.  This module may only be distributed and or
+modified under the conditions given by Perl.
 .SH "DATE"
 .IX Header "DATE"
-March 25, 1997
+July 5, 1997
 .SH "SOURCE"
 .IX Header "SOURCE"
 This distribution can be found at
@@ -368,25 +376,10 @@ This distribution can be found at
 .Vb 1
 \&        http://www.geocities.com/SiliconValley/Lakes/8456/
 .Ve
-and other places, but probably CPAN, which can be found at
+or
 .PP
 .Vb 1
 \&        http://www.perl.com/CPAN/modules/by-module/Time/
-.Ve
-If that doesn't work, give
-.PP
-.Vb 1
-\&        http://www.perl.com/perl/CPAN
-.Ve
-a shot.
-.SH "AUTHENTICITY VERIFICATION"
-.IX Header "AUTHENTICITY VERIFICATION"
-A signature for Period.pm came with this distribution.  It is called
-Period.pm.sig.  The module can be verified with the public PGP key called
-\*(L"Patrick Ryan <pryan@sleepy>\*(R".  That public PGP key is available through
-.PP
-.Vb 1
-\&        http://www.geocities.com/SiliconValley/Lakes/8456/
 .Ve
 
 .rn }` ''
