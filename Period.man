@@ -1,0 +1,387 @@
+.rn '' }`
+''' $RCSfile$$Revision$$Date$
+'''
+''' $Log$
+'''
+.de Sh
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp
+.if t .sp .5v
+.if n .sp
+..
+.de Ip
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.de Vb
+.ft CW
+.nf
+.ne \\$1
+..
+.de Ve
+.ft R
+
+.fi
+..
+'''
+'''
+'''     Set up \*(-- to give an unbreakable dash;
+'''     string Tr holds user defined translation string.
+'''     Bell System Logo is used as a dummy character.
+'''
+.tr \(*W-|\(bv\*(Tr
+.ie n \{\
+.ds -- \(*W-
+.ds PI pi
+.if (\n(.H=4u)&(1m=24u) .ds -- \(*W\h'-12u'\(*W\h'-12u'-\" diablo 10 pitch
+.if (\n(.H=4u)&(1m=20u) .ds -- \(*W\h'-12u'\(*W\h'-8u'-\" diablo 12 pitch
+.ds L" ""
+.ds R" ""
+.ds L' '
+.ds R' '
+'br\}
+.el\{\
+.ds -- \(em\|
+.tr \*(Tr
+.ds L" ``
+.ds R" ''
+.ds L' `
+.ds R' '
+.ds PI \(*p
+'br\}
+.\"	If the F register is turned on, we'll generate
+.\"	index entries out stderr for the following things:
+.\"		TH	Title 
+.\"		SH	Header
+.\"		Sh	Subsection 
+.\"		Ip	Item
+.\"		X<>	Xref  (embedded
+.\"	Of course, you have to process the output yourself
+.\"	in some meaninful fashion.
+.if \nF \{
+.de IX
+.tm Index:\\$1\t\\n%\t"\\$2"
+..
+.nr % 0
+.rr F
+.\}
+.TH PERIOD 1 "perl 5.003 with" "26/Jan/97" "User Contributed Perl Documentation"
+.IX Title "PERIOD 1"
+.UC
+.IX Name "Time::Period - A Perl module to deal with time periods."
+.if n .hy 0
+.if n .na
+.ds C+ C\v'-.1v'\h'-1p'\s-2+\h'-1p'+\s0\v'.1v'\h'-1p'
+.de CQ          \" put $1 in typewriter font
+.ft CW
+'if n "\c
+'if t \\&\\$1\c
+'if n \\&\\$1\c
+'if n \&"
+\\&\\$2 \\$3 \\$4 \\$5 \\$6 \\$7
+'.ft R
+..
+.\" @(#)ms.acc 1.5 88/02/08 SMI; from UCB 4.2
+.	\" AM - accent mark definitions
+.bd B 3
+.	\" fudge factors for nroff and troff
+.if n \{\
+.	ds #H 0
+.	ds #V .8m
+.	ds #F .3m
+.	ds #[ \f1
+.	ds #] \fP
+.\}
+.if t \{\
+.	ds #H ((1u-(\\\\n(.fu%2u))*.13m)
+.	ds #V .6m
+.	ds #F 0
+.	ds #[ \&
+.	ds #] \&
+.\}
+.	\" simple accents for nroff and troff
+.if n \{\
+.	ds ' \&
+.	ds ` \&
+.	ds ^ \&
+.	ds , \&
+.	ds ~ ~
+.	ds ? ?
+.	ds ! !
+.	ds /
+.	ds q
+.\}
+.if t \{\
+.	ds ' \\k:\h'-(\\n(.wu*8/10-\*(#H)'\'\h"|\\n:u"
+.	ds ` \\k:\h'-(\\n(.wu*8/10-\*(#H)'\`\h'|\\n:u'
+.	ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'^\h'|\\n:u'
+.	ds , \\k:\h'-(\\n(.wu*8/10)',\h'|\\n:u'
+.	ds ~ \\k:\h'-(\\n(.wu-\*(#H-.1m)'~\h'|\\n:u'
+.	ds ? \s-2c\h'-\w'c'u*7/10'\u\h'\*(#H'\zi\d\s+2\h'\w'c'u*8/10'
+.	ds ! \s-2\(or\s+2\h'-\w'\(or'u'\v'-.8m'.\v'.8m'
+.	ds / \\k:\h'-(\\n(.wu*8/10-\*(#H)'\z\(sl\h'|\\n:u'
+.	ds q o\h'-\w'o'u*8/10'\s-4\v'.4m'\z\(*i\v'-.4m'\s+4\h'\w'o'u*8/10'
+.\}
+.	\" troff and (daisy-wheel) nroff accents
+.ds : \\k:\h'-(\\n(.wu*8/10-\*(#H+.1m+\*(#F)'\v'-\*(#V'\z.\h'.2m+\*(#F'.\h'|\\n:u'\v'\*(#V'
+.ds 8 \h'\*(#H'\(*b\h'-\*(#H'
+.ds v \\k:\h'-(\\n(.wu*9/10-\*(#H)'\v'-\*(#V'\*(#[\s-4v\s0\v'\*(#V'\h'|\\n:u'\*(#]
+.ds _ \\k:\h'-(\\n(.wu*9/10-\*(#H+(\*(#F*2/3))'\v'-.4m'\z\(hy\v'.4m'\h'|\\n:u'
+.ds . \\k:\h'-(\\n(.wu*8/10)'\v'\*(#V*4/10'\z.\v'-\*(#V*4/10'\h'|\\n:u'
+.ds 3 \*(#[\v'.2m'\s-2\&3\s0\v'-.2m'\*(#]
+.ds o \\k:\h'-(\\n(.wu+\w'\(de'u-\*(#H)/2u'\v'-.3n'\*(#[\z\(de\v'.3n'\h'|\\n:u'\*(#]
+.ds d- \h'\*(#H'\(pd\h'-\w'~'u'\v'-.25m'\f2\(hy\fP\v'.25m'\h'-\*(#H'
+.ds D- D\\k:\h'-\w'D'u'\v'-.11m'\z\(hy\v'.11m'\h'|\\n:u'
+.ds th \*(#[\v'.3m'\s+1I\s-1\v'-.3m'\h'-(\w'I'u*2/3)'\s-1o\s+1\*(#]
+.ds Th \*(#[\s+2I\s-2\h'-\w'I'u*3/5'\v'-.3m'o\v'.3m'\*(#]
+.ds ae a\h'-(\w'a'u*4/10)'e
+.ds Ae A\h'-(\w'A'u*4/10)'E
+.ds oe o\h'-(\w'o'u*4/10)'e
+.ds Oe O\h'-(\w'O'u*4/10)'E
+.	\" corrections for vroff
+.if v .ds ~ \\k:\h'-(\\n(.wu*9/10-\*(#H)'\s-2\u~\d\s+2\h'|\\n:u'
+.if v .ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'\v'-.4m'^\v'.4m'\h'|\\n:u'
+.	\" for low resolution devices (crt and lpr)
+.if \n(.H>23 .if \n(.V>19 \
+\{\
+.	ds : e
+.	ds 8 ss
+.	ds v \h'-1'\o'\(aa\(ga'
+.	ds _ \h'-1'^
+.	ds . \h'-1'.
+.	ds 3 3
+.	ds o a
+.	ds d- d\h'-1'\(ga
+.	ds D- D\h'-1'\(hy
+.	ds th \o'bp'
+.	ds Th \o'LP'
+.	ds ae ae
+.	ds Ae AE
+.	ds oe oe
+.	ds Oe OE
+.\}
+.rm #[ #] #H #V #F C
+.SH "NAME"
+.IX Header "NAME"
+Time::Period \- A Perl module to deal with time periods.
+.SH "SYNOPSIS"
+.IX Header "SYNOPSIS"
+\f(CWuse Time::Period;\fR
+.PP
+\f(CW$result = inPeriod($time, $period);\fR
+.SH "DESCRIPTION"
+.IX Header "DESCRIPTION"
+The \fBinPeriod\fR function determines if a given time falls within a given
+period.  inPeriod returns \fB1\fR if the time does fall within the given period,
+\fB0\fR if not, and \fB\-1\fR if inPeriod detects a malformed time or period.
+.PP
+The time is specified as per the \f(CWtime()\fR function, which is assumed to be
+the number of non-leap seconds since January 1, 1970.
+.PP
+The period is specified as a string which adheres to the format
+.PP
+.Vb 1
+\&        sub-period[, sub-period...]
+.Ve
+where a sub-period is of the form
+.PP
+.Vb 1
+\&        scale {range [range ...]} [scale {range [range ...]}]
+.Ve
+Scale must be one of nine different scales (or their equivalent codes):
+.PP
+.Vb 13
+\&        Scale  | Scale | Valid Range Values
+\&               | Code  |
+\&        *******|*******|*************************************************
+\&        year   |  yr   | n      where n is an integer 0<=n<=99 or n>=1970
+\&        month  |  mo   | 1-12   or  jan, feb, mar, apr, may, jun, jul,
+\&               |       |            aug, sep, oct, nov, dec
+\&        week   |  wk   | 1-6
+\&        yday   |  yd   | 1-365
+\&        mday   |  md   | 1-31
+\&        wday   |  wd   | 1-7    or  su, mo, tu, we, th, fr, sa
+\&        hour   |  hr   | 0-23   or  12am 1am-11am 12noon 12pm 1pm-11pm
+\&        minute |  min  | 0-59
+\&        second |  sec  | 0-59
+.Ve
+The same scale type may be specified multiple times.  Additional scales
+simply extend the range defined by previous scales of the same type.
+.PP
+The range for a given scale must be a valid value in the form of
+.PP
+.Vb 1
+\&        v
+.Ve
+or
+.PP
+.Vb 1
+\&        v-v
+.Ve
+For the range specification v-v, if the second value is larger than
+the first value, the range wraps around unless the scale specification
+is year.
+.PP
+Year does not wrap because the year is never really reset, it just
+increments.  Ignoring that fact has lead to the dreaded year 2000 nightmare.
+When the year rolls over from 99 to 00, it has really rolled over a century,
+not gone back a century.  inPeriod supports the dangerous two digit year
+notation because it is so rampant, however, inPeriod converts the two digit
+notation to four digits by prepending the first two digits from the current
+year.  In the case of 99-1972, the 99 is translated to whatever current
+century it is (probably 20th), and then range 99-1972 is treated as
+1972-1999.  If it were the 21st century, then the range would be 1972-2099.
+.PP
+Anyway, if v-v is 9-2 and the scale is month, September, October, November,
+December, January, and February are the months that the range specifies.
+If v-v is 2-9, then the valid months are February, March, April, May, Jun,
+July, August, and September.  9-2 is the same as Sep-Feb.
+.PP
+v isn't a point in time.  In the context of the hour scale, 9
+specifies the time period from 9:00:00 am to 9:59:59 am.  This is what
+most people would call 9-10.  In other words, v is discrete in its
+time scale.  9 changes to 10 when 9:59:59 changes to 10:00:00, but it
+is 9 from 9:00:00 to 9:59:59.  Just before 9:00:00, v was 8.
+.PP
+Note that whitespace can be anywhere and case is not important.  Note also
+that scales must be specified either in long form (year, month, week,
+etc.) or in code form (yr, mo, wk, etc.).  Scale forms may be mixed in a
+period statement.
+.PP
+Furthermore, when using letters to specify ranges, only the first two
+for week days or the first three for months are significant.  January
+is a valid specification for jan, and Sunday is a valid specification
+for su.  Sun is also valid for su.
+.Sh "\s-1PERIOD\s0 \s-1EXAMPLES\s0"
+.IX Subsection "\s-1PERIOD\s0 \s-1EXAMPLES\s0"
+To specify a time period from Monday through Friday, 9am to 5pm, use a
+period such as
+.PP
+.Vb 1
+\&        wd {Mon-Fri} hr {9am-4pm}
+.Ve
+To specify a time period from Monday through Friday, 9am to 5pm on Monday,
+Wednesday, and Friday, and 9am to 3pm on Tuesday and Thursday, use a
+period such as
+.PP
+.Vb 1
+\&        wd {Mon Wed Fri} hr {9am-4pm}, wd{Tue Thu} hr {9am-2pm}
+.Ve
+To specify a time period that extends Mon-Fri 9am-5pm, but alternates weeks
+in a month, use a period such as
+.PP
+.Vb 1
+\&        wk {1 3 5} wd {Mon Wed Fri} hr {9am-4pm}
+.Ve
+Or how about a period that specifies winter?
+.PP
+.Vb 1
+\&        mo {Nov-Feb}
+.Ve
+This is equivalent to the previous example:
+.PP
+.Vb 1
+\&        mo {Jan-Feb Nov-Dec}
+.Ve
+As is
+.PP
+.Vb 1
+\&        mo {jan feb nov dec}
+.Ve
+And this is too:
+.PP
+.Vb 1
+\&        mo {Jan Feb}, mo {Nov Dec}
+.Ve
+Wait!  So is this:
+.PP
+.Vb 1
+\&        mo {Jan Feb} mo {Nov Dec}
+.Ve
+To specify a period that describes every half-hour, use something like
+.PP
+.Vb 1
+\&        minute { 0-29 }
+.Ve
+To specify the morning, use
+.PP
+.Vb 1
+\&        hour { 12am-11am }
+.Ve
+Remember, 11am is not 11:00:00am, but rather 11:00:00am \- 11:59:59am.
+.PP
+Hmmmm, every 5 seconds could be a fun period...
+.PP
+.Vb 1
+\&        sec {0-4 10-14 20-24 30-34 40-44 50-54}
+.Ve
+To specify every first half-hour on alternating week days, and the second
+half-hour the rest of the week, use the period
+.PP
+.Vb 1
+\&        wd {1 3 5 7} min {0-29}, wd {2 4 6} min {30-59}
+.Ve
+.SH "VERSION"
+.IX Header "VERSION"
+1.11
+.SH "HISTORY"
+.IX Header "HISTORY"
+.PP
+.Vb 3
+\&        Version 1.11
+\&        ------------
+\&                - Minor bug fix in 1.10.
+.Ve
+.Vb 3
+\&        Version 1.10
+\&        ------------
+\&                - Released.
+.Ve
+.SH "AUTHOR"
+.IX Header "AUTHOR"
+Patrick Ryan <pryan@fhcrc.org>
+.SH "COPYRIGHT"
+.IX Header "COPYRIGHT"
+Copyright (c) 1997 Patrick Ryan.  All rights reserved.  This Perl module uses the
+conditions given by Perl.  This module may only be distributed and or modified
+under the conditions given by Perl.
+.SH "DATE"
+.IX Header "DATE"
+January 26, 1997
+.SH "SOURCE"
+.IX Header "SOURCE"
+This distribution can be found at
+.PP
+.Vb 1
+\&        http://newhutch.fhcrc.org/Patrick/Period/
+.Ve
+and other places, but probably CPAN, which can be found at
+.PP
+.Vb 1
+\&        http://www.perl.com/perl/CPAN/README.html
+.Ve
+If that doesn't work, give
+.PP
+.Vb 1
+\&        http://www.perl.com/perl/CPAN
+.Ve
+a shot.
+.SH "AUTHENTICITY VERIFICATION"
+.IX Header "AUTHENTICITY VERIFICATION"
+A signature for Period.pm came with this distribution.  It is called
+Period.pm.sig.  The module can be verified with the public PGP key called
+\*(L"Patrick Ryan <pryan@sleepy>\*(R".  That public PGP key is available through
+.PP
+.Vb 1
+\&        http://newhutch.fhcrc.org/Patrick/
+.Ve
+
+.rn }` ''
